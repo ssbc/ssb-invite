@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 var minimist     = require('minimist')
 var argv = process.argv.slice(2)
 var i = argv.indexOf('--')
@@ -22,11 +23,4 @@ require('ssb-client')({
     sbot.close()
   })
 })
-
-
-
-
-
-
-
 
