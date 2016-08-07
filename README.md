@@ -37,11 +37,11 @@ It's easiest to set your pub in your local config.
 npm install -g ssb-invite
 
 # new style
-ssb-invite create --modern
+ssb-invite --modern
 <newstyle invite code>
 
 # old style
-ssb-invite create 1
+ssb-invite 1
 <oldstyle invite code>
 ```
 
