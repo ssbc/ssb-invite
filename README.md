@@ -3,7 +3,7 @@
 a simple command to create invites without sshing into a pub.
 
 first, ssh into your pub, and set your self as the pub's `master`.
-(this is similar to adding your key to `.ssh/authorized_hosts`)
+(this is like the ssb version adding your pubkey to `.ssh/authorized_hosts`)
 
 ```
 # copy your local pubkey.
@@ -16,7 +16,7 @@ ssh yourpub.com
 
 # edit config
 
-nano ~/.ssh/config
+nano ~/.ssb/config
 
 # add the pub key from your local machine.
 
