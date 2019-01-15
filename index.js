@@ -264,10 +264,10 @@ module.exports = {
               }),
               (
                 opts.host
-                ? cont(server.publish({
+                ? cont(server.publish)({
                     type: 'pub',
                     address: opts
-                  }))
+                  })
                 : function (cb) { cb() }
               )
             ])
