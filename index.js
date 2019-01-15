@@ -256,7 +256,7 @@ module.exports = {
 
             // follow and announce the pub
             cont.para([
-              server.publish({
+              cont(server.publish)({
                 type: 'contact',
                 following: true,
                 autofollow: true,
@@ -264,10 +264,10 @@ module.exports = {
               }),
               (
                 opts.host
-                ? server.publish({
+                ? cont(server.publish({
                     type: 'pub',
                     address: opts
-                  })
+                  }))
                 : function (cb) { cb() }
               )
             ])
