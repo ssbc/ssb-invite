@@ -5,6 +5,7 @@ var tape = require('tape')
 var pull = require('pull-stream')
 var ssbClient = require('ssb-client')
 var ref = require('ssb-ref')
+var crypto = require('crypto')
 
 var createSsbServer = require('ssb-server')
   //.use(require('../plugins/master'))
@@ -44,6 +45,68 @@ tape('test invite.accept api', function (t) {
   var carol = createSsbServer({
     temp: 'test-invite-carol2', timeout: 100,
     keys: ssbKeys.generate(),
+  })
+
+  if(!alice.getAddress('device'))
+    throw new Error('alice must have device address')
+  if(!alice.getAddress('local'))
+    throw new Error('alice must have local address')
+
+  //request a secret that with particular permissions.
+
+  alice.invite.create(1, function (err, invite) {
+    if(err) throw err
+    //test that invite is accepted with quotes around it.
+    bob.invite.accept(JSON.stringify(invite), function (err) {
+      if(err) throw err
+      alice.friends.hops({
+        source: alice.id, dest: bob.id
+      }, function (err, hops) {
+        if(err) throw err
+        t.equal(hops[bob.id], 1, 'alice follows bob')
+        carol.invite.accept(invite, function (err) {
+          alice.friends.hops({
+            source: alice.id, dest: bob.id
+          }, function (err, hops) {
+            t.equal(hops[carol.id], undefined)
+            alice.close(true)
+            bob.close(true)
+            carol.close(true)
+            t.end()
+          })
+        })
+      })
+    })
+  })
+})
+
+tape('test invite.accept api using non default app key', function (t) {
+
+  var appkey = crypto.randomBytes(32).toString('base64');
+
+  var alice = createSsbServer({
+    temp: 'test-invite-alice2', timeout: 100,
+    allowPrivate: true,
+    keys: ssbKeys.generate(),
+    caps: {
+      shs: appkey
+    }
+  })
+
+  var bob = createSsbServer({
+    temp: 'test-invite-bob2', timeout: 100,
+    keys: ssbKeys.generate(),
+    caps: {
+      shs: appkey
+    }
+  })
+
+  var carol = createSsbServer({
+    temp: 'test-invite-carol2', timeout: 100,
+    keys: ssbKeys.generate(),
+    caps: {
+      shs: appkey
+    }
   })
 
   if(!alice.getAddress('device'))
