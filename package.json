@@ -14,7 +14,7 @@
     "level": "^4.0.0",
     "level-sublevel": "^6.6.5",
     "mdmanifest": "^1.0.8",
-    "ssb-client": "^4.7.0",
+    "ssb-client": "^4.7.4",
     "ssb-keys": "^7.1.3",
     "ssb-ref": "^2.13.9"
   },

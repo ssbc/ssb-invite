@@ -14,7 +14,7 @@ var path = require('path')
 
 var manifest = mdm.manifest(fs.readFileSync(path.join(__dirname, 'api.md'), 'utf8'))
 
-var ssbClient = require('ssb-client')
+var createClient = require('ssb-client/client')
 
 // invite plugin
 // adds methods for producing invite-codes,
@@ -199,6 +199,9 @@ module.exports = {
       }, 'object'),
       accept: valid.async(function (invite, cb) {
         // remove surrounding quotes, if found
+        if(isObject(invite))
+          invite = invite.invite
+
         if (invite.charAt(0) === '"' && invite.charAt(invite.length - 1) === '"')
           invite = invite.slice(1, -1)
         var opts
@@ -221,9 +224,10 @@ module.exports = {
 
         opts = ref.parseAddress(ref.parseInvite(invite).remote)
         function connect (cb) {
-          ssbClient(null, {
-            caps: config.caps,
+          createClient({
+            keys: true, //use seed from invite instead.
             remote: invite,
+            config: config,
             manifest: {invite: {use: 'async'}, getAddress: 'async'}
           }, cb)
         }
@@ -285,9 +289,5 @@ module.exports = {
     }
   }
 }
-
-
-
-
 
 
