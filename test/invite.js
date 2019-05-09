@@ -7,6 +7,8 @@ var ssbClient = require('ssb-client')
 var ref = require('ssb-ref')
 var crypto = require('crypto')
 
+var caps = {shs: crypto.randomBytes(32).toString('base64')}
+
 var createSsbServer = require('ssb-server')
   //.use(require('../plugins/master'))
   .use(require('..'))
@@ -35,16 +37,19 @@ tape('test invite.accept api', function (t) {
     temp: 'test-invite-alice2', timeout: 100,
     allowPrivate: true,
     keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   var bob = createSsbServer({
     temp: 'test-invite-bob2', timeout: 100,
     keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   var carol = createSsbServer({
     temp: 'test-invite-carol2', timeout: 100,
     keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   if(!alice.getAddress('device'))
@@ -88,25 +93,20 @@ tape('test invite.accept api using non default app key', function (t) {
     temp: 'test-invite-alice2', timeout: 100,
     allowPrivate: true,
     keys: ssbKeys.generate(),
-    caps: {
-      shs: appkey
-    }
+//    caps: caps,
+    caps: { shs: appkey }
   })
 
   var bob = createSsbServer({
     temp: 'test-invite-bob2', timeout: 100,
     keys: ssbKeys.generate(),
-    caps: {
-      shs: appkey
-    }
+    caps: { shs: appkey }
   })
 
   var carol = createSsbServer({
     temp: 'test-invite-carol2', timeout: 100,
     keys: ssbKeys.generate(),
-    caps: {
-      shs: appkey
-    }
+    caps: { shs: appkey }
   })
 
   if(!alice.getAddress('device'))
@@ -148,13 +148,15 @@ tape('test invite.accept doesnt follow if already followed', function (t) {
     temp: 'test-invite-alice3',
     timeout: 100,
     allowPrivate: true,
-    keys: ssbKeys.generate()
+    keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   var bob = createSsbServer({
     temp: 'test-invite-bob3',
     timeout: 100,
-    keys: ssbKeys.generate()
+    keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   //request a secret that with particular permissions.
@@ -221,12 +223,14 @@ tape('test invite.accept api with ipv6', { skip: skipIPv6 }, function (t) {
   var alice = createSsbServer({
     temp: 'test-invite-alice4', timeout: 100,
     allowPrivate: true,
-    keys: ssbKeys.generate()
+    keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   var bob = createSsbServer({
     temp: 'test-invite-bob4', timeout: 100,
-    keys: ssbKeys.generate()
+    keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   alice.invite.create(1, function (err, invite) {
@@ -269,17 +273,20 @@ tape('test invite.create with modern', function (t) {
     temp: 'test-invite-alice5', timeout: 100,
     allowPrivate: true,
     keys: ssbKeys.generate(),
-    connections: wsConnections
+    connections: wsConnections,
+    caps: caps,
   })
 
   var bob = createSsbServer({
     temp: 'test-invite-bob5', timeout: 100,
-    keys: ssbKeys.generate()
+    keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   var carol = createSsbServer({
     temp: 'test-invite-carol5', timeout: 100,
-    keys: ssbKeys.generate()
+    keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   //request a secret that with particular permissions.
@@ -317,7 +324,6 @@ tape('test invite.create with modern', function (t) {
   })
 })
 
-
 tape('test invite.accept doesnt follow if already followed', function (t) {
 
   var alice = createSsbServer({
@@ -325,7 +331,8 @@ tape('test invite.accept doesnt follow if already followed', function (t) {
     timeout: 100,
     allowPrivate: true,
     keys: ssbKeys.generate(),
-    connections: wsConnections
+    connections: wsConnections,
+    caps: caps,
   })
 
   alice.publish({type: 'test', okay: true}, function (err, msg) {
@@ -334,7 +341,8 @@ tape('test invite.accept doesnt follow if already followed', function (t) {
     alice.invite.create({modern: true}, function (err, invite) {
       ssbClient(null, {
         remote: invite,
-        manifest: {get: 'async', add: 'async'}
+        manifest: {get: 'async', add: 'async'},
+        caps: caps
       }, function (err, rpc) {
         if(err) throw err
         rpc.get(msg.key, function (err, value) {
@@ -354,12 +362,14 @@ tape('test invite with note', function (t) {
   var alice = createSsbServer({
     temp: 'test-invite-alice7', timeout: 100,
     allowPrivate: true,
-    keys: ssbKeys.generate()
+    keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   var bob = createSsbServer({
     temp: 'test-invite-bob7', timeout: 100,
-    keys: ssbKeys.generate()
+    keys: ssbKeys.generate(),
+    caps: caps,
   })
 
   alice.invite.create({uses:1, note:'bob'}, function (err, invite) {
@@ -385,6 +395,5 @@ tape('test invite with note', function (t) {
     })
   })
 })
-
 
 
