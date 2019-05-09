@@ -324,7 +324,9 @@ tape('test invite.create with modern', function (t) {
   })
 })
 
-tape('test invite.accept doesnt follow if already followed', function (t) {
+tape('invite guest may NOT call get', function (t) {
+
+  var keys = ssbKeys.generate()
 
   var alice = createSsbServer({
     temp: 'test-invite-alice6',
@@ -337,9 +339,9 @@ tape('test invite.accept doesnt follow if already followed', function (t) {
 
   alice.publish({type: 'test', okay: true}, function (err, msg) {
     if(err) throw err
-    console.log(msg)
     alice.invite.create({modern: true}, function (err, invite) {
-      ssbClient(null, {
+      if(err) throw err
+      ssbClient(keys, {
         remote: invite,
         manifest: {get: 'async', add: 'async'},
         caps: caps
@@ -347,15 +349,16 @@ tape('test invite.accept doesnt follow if already followed', function (t) {
         if(err) throw err
         rpc.get(msg.key, function (err, value) {
           t.ok(err)
-          console.log(value)
-          t.end()
-          alice.close()
+          rpc.add(msg.key, function (err, value) {
+            t.ok(err)
+            t.end()
+            alice.close()
+          })
         })
       })
     })
   })
 })
-
 
 tape('test invite with note', function (t) {
 
@@ -395,5 +398,9 @@ tape('test invite with note', function (t) {
     })
   })
 })
+
+
+
+
 
 
