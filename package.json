@@ -22,7 +22,7 @@
     "ssb-friends": "^4.1.0",
     "ssb-gossip": "^1.0.10",
     "ssb-replicate": "^1.0.1",
-    "ssb-server": "^13.5.2",
+    "ssb-server": "^14.1.0",
     "tape": "^4.9.2"
   },
   "scripts": {
