@@ -1,11 +1,11 @@
 {
   "name": "ssb-invite",
   "description": "",
-  "version": "2.0.3",
-  "homepage": "https://github.com/dominictarr/ssb-invite",
+  "version": "2.0.4",
+  "homepage": "https://github.com/ssbc/ssb-invite",
   "repository": {
     "type": "git",
-    "url": "git://github.com/dominictarr/ssb-invite.git"
+    "url": "git://github.com/ssbc/ssb-invite.git"
   },
   "dependencies": {
     "cont": "^1.0.3",

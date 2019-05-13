@@ -12,8 +12,6 @@ var level = require('level')
 var sublevel = require('level-sublevel/bytewise')
 var path = require('path')
 
-var manifest = mdm.manifest(fs.readFileSync(path.join(__dirname, 'api.md'), 'utf8'))
-
 var createClient = require('ssb-client/client')
 
 // invite plugin
@@ -39,7 +37,7 @@ function isNumber(n) {
 module.exports = {
   name: 'invite',
   version: '1.0.0',
-  manifest: manifest,
+  manifest: require('./manifest.json'),
   permissions: {
     master: {allow: ['create']},
     //temp: {allow: ['use']}
@@ -289,5 +287,4 @@ module.exports = {
     }
   }
 }
-
 
