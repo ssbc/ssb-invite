@@ -10,7 +10,6 @@ var crypto = require('crypto')
 var caps = {shs: crypto.randomBytes(32).toString('base64')}
 
 var createSsbServer = require('ssb-server')
-  //.use(require('../plugins/master'))
   .use(require('..'))
   .use(require('ssb-replicate'))
   .use(require('ssb-friends'))
@@ -90,7 +89,7 @@ tape('test invite.accept api using non default app key', function (t) {
   var appkey = crypto.randomBytes(32).toString('base64');
 
   var alice = createSsbServer({
-    temp: 'test-invite-alice2', timeout: 100,
+    temp: 'test-invite-alice2.2', timeout: 100,
     allowPrivate: true,
     keys: ssbKeys.generate(),
 //    caps: caps,
@@ -98,13 +97,13 @@ tape('test invite.accept api using non default app key', function (t) {
   })
 
   var bob = createSsbServer({
-    temp: 'test-invite-bob2', timeout: 100,
+    temp: 'test-invite-bob2.2', timeout: 100,
     keys: ssbKeys.generate(),
     caps: { shs: appkey }
   })
 
   var carol = createSsbServer({
-    temp: 'test-invite-carol2', timeout: 100,
+    temp: 'test-invite-carol2.2', timeout: 100,
     keys: ssbKeys.generate(),
     caps: { shs: appkey }
   })
@@ -398,9 +397,4 @@ tape('test invite with note', function (t) {
     })
   })
 })
-
-
-
-
-
 
