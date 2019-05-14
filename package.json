@@ -14,15 +14,17 @@
     "level": "^5.0.0",
     "level-sublevel": "^6.6.5",
     "mdmanifest": "^1.0.8",
+    "muxrpc-validation": "^3.0.0",
     "ssb-client": "^4.7.4",
     "ssb-keys": "^7.1.3",
     "ssb-ref": "^2.13.9"
   },
   "devDependencies": {
+    "pull-stream": "^3.6.11",
     "ssb-friends": "^4.1.0",
-    "ssb-gossip": "^1.0.10",
     "ssb-replicate": "^1.0.1",
     "ssb-server": "^14.1.0",
+    "ssb-ws": "^6.2.0",
     "tape": "^4.9.2"
   },
   "scripts": {
