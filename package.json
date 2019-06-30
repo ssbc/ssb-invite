@@ -23,7 +23,7 @@
     "pull-stream": "^3.6.11",
     "ssb-friends": "^4.1.0",
     "ssb-replicate": "^1.0.1",
-    "ssb-server": "^14.1.0",
+    "ssb-server": "^15.0.2",
     "ssb-ws": "^6.2.0",
     "tape": "^4.9.2"
   },
