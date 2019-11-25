@@ -38,8 +38,7 @@ module.exports = {
   version: '1.0.0',
   manifest: require('./manifest.json'),
   permissions: {
-    master: {allow: ['create']},
-    //temp: {allow: ['use']}
+    master: {allow: ['create', 'use']},
   },
   init: function (server, config) {
     var codes = {}, codesDB
