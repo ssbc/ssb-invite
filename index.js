@@ -5,7 +5,6 @@ var ssbKeys = require('ssb-keys')
 var cont = require('cont')
 var explain = require('explain-error')
 var ip = require('ip')
-var fs = require('fs')
 var ref = require('ssb-ref')
 var level = require('level')
 var sublevel = require('level-sublevel/bytewise')
@@ -19,10 +18,6 @@ var createClient = require('ssb-client/client')
 
 function isFunction (f) {
   return 'function' === typeof f
-}
-
-function isString (s) {
-  return 'string' === typeof s
 }
 
 function isObject(o) {
@@ -42,7 +37,7 @@ module.exports = {
     //temp: {allow: ['use']}
   },
   init: function (server, config) {
-    var codes = {}, codesDB
+    let codesDB
     if(server.sublevel)
       codesDB = server.sublevel('codes')
     else {
@@ -73,7 +68,7 @@ module.exports = {
       return (config.allowPrivate
         ? server.getAddress('public') || server.getAddress('local') || server.getAddress('private')
         : server.getAddress('public')
-        )
+      )
     }
 
     return {
@@ -104,8 +99,9 @@ module.exports = {
           host = opts.external
 
         if(!config.allowPrivate && (ip.isPrivate(host) || 'localhost' === host || host === ''))
-          return cb(new Error('Server has no public ip address, '
-                            + 'cannot create useable invitation'))
+          return cb(new Error(
+            'Server has no public ip address, cannot create useable invitation')
+          )
 
         //this stuff is SECURITY CRITICAL
         //so it should be moved into the main app.
@@ -118,7 +114,6 @@ module.exports = {
         var keyCap = ssbKeys.generate('ed25519', seed)
 
         // store metadata under the generated pubkey
-        var owner = server.id
         codesDB.put(keyCap.id,  {
           id: keyCap.id,
           total: +opts.uses || 1,
@@ -130,7 +125,7 @@ module.exports = {
           if(err) cb(err)
           else if(opts.modern) {
             var ws_addr = getInviteAddress().split(';').sort(function (a, b) {
-               return +/^ws/.test(b) - +/^ws/.test(a)
+              return +/^ws/.test(b) - +/^ws/.test(a)
             }).shift()
 
 
@@ -152,8 +147,8 @@ module.exports = {
 
           // check if we're already following them
           server.friends.get(function (err, follows) {
-//          server.friends.all('follow', function(err, follows) {
-//            if(hops[req.feed] == 1)
+            //          server.friends.all('follow', function(err, follows) {
+            //            if(hops[req.feed] == 1)
             if (follows && follows[server.id] && follows[server.id][req.feed])
               return cb(new Error('already following'))
 
@@ -204,7 +199,6 @@ module.exports = {
         var opts
         // connect to the address in the invite code
         // using a keypair generated from the key-seed in the invite code
-        var modern = false
         if(ref.isInvite(invite)) { //legacy ivite
           if(ref.isLegacyInvite(invite)) {
             var parts = invite.split('~')
@@ -215,8 +209,6 @@ module.exports = {
               protocol = 'onion:'
             invite = protocol+opts.host+':'+opts.port+'~shs:'+opts.key.slice(1, -8)+':'+parts[1]
           }
-          else
-            modern = true
         }
 
         opts = ref.parseAddress(ref.parseInvite(invite).remote)
@@ -266,19 +258,18 @@ module.exports = {
               (
                 opts.host
                 ? cont(server.publish)({
-                    type: 'pub',
-                    address: opts
-                  })
+                  type: 'pub',
+                  address: opts
+                })
                 : function (cb) { cb() }
               )
-            ])
-            (function (err, results) {
+            ])(function (err, results) {
               if(err) return cb(err)
               rpc.close()
-                rpc.close()
-                //ignore err if this is new style invite
-                if(server.gossip) server.gossip.add(ref.parseInvite(invite).remote, 'seed')
-                cb(null, results)
+              rpc.close()
+              //ignore err if this is new style invite
+              if(server.gossip) server.gossip.add(ref.parseInvite(invite).remote, 'seed')
+              cb(null, results)
             })
           })
         })
