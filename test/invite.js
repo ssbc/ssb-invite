@@ -237,7 +237,7 @@ tape('test invite.accept api with ipv6', { skip: skipIPv6 }, function (t) {
 
     // use a local ipv6 address in the invite
 
-    var inviteV6
+    let inviteV6
      = invite.replace(/localhost|([0-9.]*)/, '::1')
 
 //    var parts = invite.split(':')
@@ -249,7 +249,7 @@ tape('test invite.accept api with ipv6', { skip: skipIPv6 }, function (t) {
 
     addr.host = '::1'
 
-    var inviteV6 = addr.host + ':'+ addr.port + ':' + addr.key + '~' + parts[1]
+    inviteV6 = addr.host + ':'+ addr.port + ':' + addr.key + '~' + parts[1]
 
     bob.invite.accept(inviteV6, function (err, msg) {
       if(err) throw err
