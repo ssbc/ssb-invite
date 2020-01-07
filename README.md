@@ -13,58 +13,39 @@ Soon, hopefully supercededed by [ssb-peer-invites](https://github.com/ssbc/ssb-p
 
 ## api
 
-### create: async
+### create ({uses, note, external, modern}, cb(err, invite_code))
 
 Create a new invite code.
 
-```shell
-create {n} [{note}, {external}]
-```
-
-```javascript
-create(n[, note, external], cb)
-```
-
-This produces an invite-code which encodes the ssb-server instance's public address, and a keypair seed.
-The keypair seed is used to generate a keypair, which is then used to authenticate a connection with the ssb-server instance.
-The ssb-server instance will then grant access to the `use` call.
-
-- `n` (number): How many times the invite can be used before it expires.
+- `uses` (number): How many times the invite can be used before it expires.
 - `note` (string): A note to associate with the invite code. The ssb-server instance will
     include this note in the follow message that it creates when `use` is
     called.
 - `external` (string): An external hostname to use
+- `modern` (boolean): if true the invite code will be a valid multiserver address.
+  if modern is enabled, uses will be set to 1.
 
+This produces an invite-code which encodes the ssb-server instance's public address,
+and a keypair seed. The keypair seed is used to generate a keypair, which is then used to authenticate a connection with the ssb-server instance.
+The ssb-server instance will then grant access to the `use` call.
 
-### accept: async
+### accept(invite_code, cb)
 
 Use an invite code.
 
- - invitecode (string)
-
-```bash
-accept {invitecode}
-```
-
-```js
-accept(invitecode, cb)
-```
+ - invite_code (string): an invite code returned by `create`
 
 This connects to the server address encoded in the invite-code, then calls `use()` on the server.
 It will cause the server to follow the local user.
 
 
-### use: async
+### use ({feed:feedId}), cb)
 
-Use an invite code created by this ssb-server instance (advanced function).
+This method is used internally, it is called on the remote pub by your local instance
+when you call `accept`. To call `use` you must authenticate
+as a guest, by using the seed in an invite code, that was created by this pub.
 
-```bash
-use --feed {feedid}
-```
-
-```javascript
-use({ feed: }, cb)
-```
+`use({feed: feed_id}, cb)`
 
 This commands the receiving server to follow the given feed.
 
