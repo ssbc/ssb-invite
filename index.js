@@ -7,7 +7,6 @@ var explain = require('explain-error')
 var ip = require('ip')
 var ref = require('ssb-ref')
 var level = require('level')
-var sublevel = require('level-sublevel/bytewise')
 var path = require('path')
 
 var createClient = require('ssb-client/client')
@@ -271,4 +270,3 @@ module.exports = {
     }
   }
 }
-
