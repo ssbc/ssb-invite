@@ -37,15 +37,9 @@ module.exports = {
     //temp: {allow: ['use']}
   },
   init: function (server, config) {
-    let codesDB
-    if(server.sublevel)
-      codesDB = server.sublevel('codes')
-    else {
-      var db = sublevel(level(path.join(config.path, 'db'), {
-        valueEncoding: 'json'
-      }))
-      codesDB = db.sublevel('codes')
-    }
+    const codesDB = level(path.join(config.path, 'invites'), {
+      valueEncoding: 'json'
+    })
     //add an auth hook.
     server.auth.hook(function (fn, args) {
       var pubkey = args[0], cb = args[1]
