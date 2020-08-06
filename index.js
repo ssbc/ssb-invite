@@ -122,7 +122,6 @@ module.exports = {
             var wsAddr = getInviteAddress().split(';').sort(function (a, b) {
               return +/^ws/.test(b) - +/^ws/.test(a)
             }).shift()
-            console.log({ getInviteAddress: getInviteAddress() })
 
             if (!/^ws/.test(wsAddr)) throw new Error('not a ws address:' + wsAddr)
             cb(null, wsAddr + ':' + seed.toString('base64'))

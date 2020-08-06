@@ -6,7 +6,7 @@ var crypto = require('crypto')
 var Server = require('./test-bot')
 
 var host = '127.0.0.1'
-var host = '::'
+// var host = '::'
 // WARNING host '::' currently fails this tests because it creates an invite
 // which parseInvite fails to process (returning null)
 
@@ -102,4 +102,3 @@ tape('invite guest may NOT call get', function (t) {
     })
   })
 })
-
