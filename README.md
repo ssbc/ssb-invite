@@ -23,7 +23,8 @@ Create a new invite code.
     called.
 - `external` (string): An external hostname to use
 - `modern` (boolean): if true the invite code will be a valid multiserver address.
-  if modern is enabled, uses will be set to 1.
+    - if modern is enabled, uses will be set to 1.
+    - :warning: "modern" invites with ipv6 addresses currently have some problems
 
 This produces an invite-code which encodes the ssb-server instance's public address,
 and a keypair seed. The keypair seed is used to generate a keypair, which is then used to authenticate a connection with the ssb-server instance.
