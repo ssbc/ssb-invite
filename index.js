@@ -39,6 +39,15 @@ module.exports = {
     const codesDB = level(path.join(config.path, 'invites'), {
       valueEncoding: 'json'
     })
+
+    // make sure to close our leveldb instance when the server quits
+    server.close.hook(function (fn, args) {
+      codesDB.close(err => {
+        if (err) console.error(`error closing leveldb: ${err.message}`)
+        fn.apply(this, args)
+      })
+    })
+
     // add an auth hook.
     server.auth.hook((fn, args) => {
       var pubkey = args[0]; var cb = args[1]
