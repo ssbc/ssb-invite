@@ -1,7 +1,7 @@
 {
   "name": "ssb-invite",
   "description": "",
-  "version": "2.1.6",
+  "version": "2.1.7",
   "homepage": "https://github.com/ssbc/ssb-invite",
   "repository": {
     "type": "git",
