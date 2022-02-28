@@ -148,11 +148,9 @@ module.exports = {
           if (err) return cb(err)
 
           // check if we're already following them
-          server.friends.get((err, follows) => {
+          server.friends.isFollowing({ source: server.id, dest: req.feed }, (err, isFollowing) => {
             if (err) return cb(err)
-            //          server.friends.all('follow', function(err, follows) {
-            //            if(hops[req.feed] == 1)
-            if (follows && follows[server.id] && follows[server.id][req.feed]) { return cb(new Error('already following')) }
+            if (isFollowing) { return cb(new Error('already following')) }
 
             // although we already know the current feed
             // it's included so that request cannot be replayed.
