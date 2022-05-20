@@ -267,7 +267,7 @@ module.exports = {
               rpc.close()
               rpc.close()
               // ignore err if this is new style invite
-              if (server.gossip) server.gossip.add(ref.parseInvite(invite).remote, 'seed')
+              if (server.gossip && server.gossip.add) server.gossip.add(ref.parseInvite(invite).remote, 'seed')
               cb(null, results)
             })
           })

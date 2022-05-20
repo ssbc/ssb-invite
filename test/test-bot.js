@@ -10,8 +10,9 @@ module.exports = function (opts = {}) {
 
   const stack = require('scuttle-testbot')
     .use(require('..'))
-    .use(require('ssb-replicate'))
     .use(require('ssb-friends'))
+    .use(require('ssb-ebt'))
+    .use(require('ssb-replication-scheduler'))
     .use(require('ssb-ws'))
 
   return stack(opts)
