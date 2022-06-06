@@ -244,16 +244,22 @@ module.exports = {
 
           // command the peer to follow me
           rpc.invite.use({ feed: server.id }, (err, msg) => {
-            if (err) return cb(explain(err, 'invite not accepted'))
+            if (err && err.message !== 'already following') {
+              return cb(explain(err, 'invite not accepted'))
+            }
 
-            // follow and announce the pub
+            // (maybe) follow and announce the pub
             cont.para([
-              cont(server.publish)({
-                type: 'contact',
-                following: true,
-                autofollow: true,
-                contact: opts.key
-              }),
+              (
+                (err && err.message === 'already following')
+                  ? (cb) => cb()
+                  : cont(server.publish)({
+                    type: 'contact',
+                    following: true,
+                    autofollow: true,
+                    contact: opts.key
+                  })
+              ),
               (
                 opts.host
                   ? cont(server.publish)({
