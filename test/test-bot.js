@@ -1,7 +1,9 @@
-var ssbKeys = require('ssb-keys')
-var crypto = require('crypto')
+const ssbKeys = require('ssb-keys')
+const crypto = require('crypto')
 
-var caps = { shs: crypto.randomBytes(32).toString('base64') }
+const caps = {
+  shs: crypto.randomBytes(32).toString('base64')
+}
 
 module.exports = function (opts = {}) {
   if (!opts.caps) opts.caps = caps
@@ -15,5 +17,8 @@ module.exports = function (opts = {}) {
     .use(require('ssb-replication-scheduler'))
     .use(require('ssb-ws'))
 
-  return stack(opts)
+  return stack({
+    db1: true,
+    ...opts
+  })
 }

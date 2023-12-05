@@ -1,15 +1,15 @@
 'use strict'
-var valid = require('muxrpc-validation')({})
-var crypto = require('crypto')
-var ssbKeys = require('ssb-keys')
-var cont = require('cont')
-var explain = require('explain-error')
-var ip = require('ip')
-var ref = require('ssb-ref')
-var level = require('level')
-var path = require('path')
+const valid = require('muxrpc-validation')({})
+const crypto = require('crypto')
+const ssbKeys = require('ssb-keys')
+const cont = require('cont')
+const explain = require('explain-error')
+const ip = require('ip')
+const ref = require('ssb-ref')
+const level = require('level')
+const path = require('path')
 
-var createClient = require('ssb-client/client')
+const createClient = require('ssb-client/client')
 
 // invite plugin
 // adds methods for producing invite-codes,
@@ -50,7 +50,7 @@ module.exports = {
 
     // add an auth hook.
     server.auth.hook((fn, args) => {
-      var pubkey = args[0]; var cb = args[1]
+      const pubkey = args[0]; const cb = args[1]
 
       // run normal authentication
       fn(pubkey, function (err, auth) {
@@ -85,7 +85,7 @@ module.exports = {
           opts = {}
         }
 
-        var addr = getInviteAddress()
+        let addr = getInviteAddress()
         if (!addr) {
           return cb(new Error(
             'no address available for creating an invite,' +
@@ -94,7 +94,7 @@ module.exports = {
           ))
         }
         addr = addr.split(';').shift()
-        var host = ref.parseAddress(addr).host
+        let host = ref.parseAddress(addr).host
         if (typeof host !== 'string') {
           return cb(new Error('Could not parse host portion from server address:' + addr))
         }
@@ -114,8 +114,8 @@ module.exports = {
         // it should be able to diminish it's own permissions.
 
         // generate a key-seed and its key
-        var seed = crypto.randomBytes(32)
-        var keyCap = ssbKeys.generate('ed25519', seed)
+        const seed = crypto.randomBytes(32)
+        const keyCap = ssbKeys.generate('ed25519', seed)
 
         // store metadata under the generated pubkey
         codesDB.put(keyCap.id, {
@@ -128,7 +128,7 @@ module.exports = {
           // emit the invite code: our server address, plus the key-seed
           if (err) cb(err)
           else if (opts.modern) {
-            var wsAddr = getInviteAddress().split(';').sort(function (a, b) {
+            const wsAddr = getInviteAddress().split(';').sort(function (a, b) {
               return +/^ws/.test(b) - +/^ws/.test(a)
             }).shift()
 
@@ -141,7 +141,7 @@ module.exports = {
         })
       }, 'number|object', 'string?'),
       use: valid.async(function (req, cb) {
-        var rpc = this
+        const rpc = this
 
         // fetch the code
         codesDB.get(rpc.id, function (err, invite) {
@@ -193,15 +193,15 @@ module.exports = {
         if (isObject(invite)) { invite = invite.invite }
 
         if (invite.charAt(0) === '"' && invite.charAt(invite.length - 1) === '"') { invite = invite.slice(1, -1) }
-        var opts
+        let opts
         // connect to the address in the invite code
         // using a keypair generated from the key-seed in the invite code
         if (ref.isInvite(invite)) { // legacy invite
           if (ref.isLegacyInvite(invite)) {
-            var parts = invite.split('~')
+            const parts = invite.split('~')
             opts = ref.parseAddress(parts[0])// .split(':')
             // convert legacy code to multiserver invite code.
-            var protocol = 'net:'
+            let protocol = 'net:'
             if (opts.host.endsWith('.onion')) { protocol = 'onion:' }
             invite = protocol + opts.host + ':' + opts.port + '~shs:' + opts.key.slice(1, -8) + ':' + parts[1]
           }
@@ -216,7 +216,7 @@ module.exports = {
           createClient({
             keys: true, // use seed from invite instead.
             remote: invite,
-            config: config,
+            config,
             manifest: { invite: { use: 'async' }, getAddress: 'async' }
           }, cb)
         }
@@ -227,9 +227,9 @@ module.exports = {
         // when it connects?
 
         function retry (fn, cb) {
-          var n = 0
+          let n = 0
           ;(function next () {
-            var start = Date.now()
+            const start = Date.now()
             fn(function (err, value) {
               n++
               if (n >= 3) cb(err, value)
