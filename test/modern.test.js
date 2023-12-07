@@ -1,16 +1,16 @@
 // WARNING: this test currently only passes if the computer has a network.
-var tape = require('tape')
-var ssbKeys = require('ssb-keys')
-var ssbClient = require('ssb-client')
-var crypto = require('crypto')
-var Server = require('./test-bot')
+const tape = require('tape')
+const ssbKeys = require('ssb-keys')
+const ssbClient = require('ssb-client')
+const crypto = require('crypto')
+const Server = require('./test-bot')
 
-var host = '127.0.0.1'
+const host = '127.0.0.1'
 // var host = '::'
 // WARNING host '::' currently fails this tests because it creates an invite
 // which parseInvite fails to process (returning null)
 
-var wsConnections = {
+const wsConnections = {
   incoming: {
     net: [{ scope: ['local', 'device'], transform: 'shs', host }],
     ws: [{ scope: ['local', 'device'], transform: 'shs', host }]
@@ -22,12 +22,12 @@ var wsConnections = {
 }
 
 tape('test invite.create with modern', function (t) {
-  var alice = Server({
+  const alice = Server({
     allowPrivate: true,
     connections: wsConnections
   })
-  var bob = Server()
-  var carol = Server()
+  const bob = Server()
+  const carol = Server()
   console.log({
     alice: alice.id,
     bob: bob.id,
@@ -68,16 +68,16 @@ tape('test invite.create with modern', function (t) {
 })
 
 tape('invite guest may NOT call get', function (t) {
-  var caps = {
+  const caps = {
     shs: crypto.randomBytes(32).toString('base64')
   }
 
-  var alice = Server({
+  const alice = Server({
     allowPrivate: true,
     connections: wsConnections,
     caps
   })
-  var bobKeys = ssbKeys.generate()
+  const bobKeys = ssbKeys.generate()
 
   alice.publish({ type: 'test', okay: true }, function (err, msg) {
     if (err) throw err

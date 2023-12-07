@@ -1,13 +1,14 @@
 // WARNING: this test currently only passes if the computer has a network.
-var tape = require('tape')
-var pull = require('pull-stream')
-var ref = require('ssb-ref')
-var crypto = require('crypto')
-var Server = require('./test-bot')
+const tape = require('tape')
+const pull = require('pull-stream')
+const ref = require('ssb-ref')
+const crypto = require('crypto')
+const Server = require('./test-bot')
 
+let skipIPv6 = false
 if (process.env.TRAVIS === 'true') {
   console.warn('IPv6 is unsupported under Travis CI, test skipped')
-  var skipIPv6 = true
+  skipIPv6 = true
 }
 
 function all (stream, cb) {
@@ -15,9 +16,9 @@ function all (stream, cb) {
 }
 
 tape('test invite.accept api', function (t) {
-  var alice = Server({ allowPrivate: true })
-  var bob = Server()
-  var carol = Server()
+  const alice = Server({ allowPrivate: true })
+  const bob = Server()
+  const carol = Server()
 
   if (!alice.getAddress('device')) { throw new Error('alice must have device address') }
   if (!alice.getAddress('local')) { throw new Error('alice must have local address') }
@@ -52,13 +53,13 @@ tape('test invite.accept api', function (t) {
 })
 
 tape('test invite.accept api using non default app key', function (t) {
-  var caps = {
+  const caps = {
     shs: crypto.randomBytes(32).toString('base64')
   }
 
-  var alice = Server({ allowPrivate: true, caps })
-  var bob = Server({ caps })
-  var carol = Server({ caps })
+  const alice = Server({ allowPrivate: true, caps })
+  const bob = Server({ caps })
+  const carol = Server({ caps })
 
   if (!alice.getAddress('device')) { throw new Error('alice must have device address') }
   if (!alice.getAddress('local')) { throw new Error('alice must have local address') }
@@ -93,8 +94,8 @@ tape('test invite.accept api using non default app key', function (t) {
 })
 
 tape('test invite.accept doesnt follow if already followed', function (t) {
-  var alice = Server({ allowPrivate: true })
-  var bob = Server()
+  const alice = Server({ allowPrivate: true })
+  const bob = Server()
 
   // request a secret that with particular permissions.
 
@@ -114,7 +115,7 @@ tape('test invite.accept doesnt follow if already followed', function (t) {
 
             // it's rare, but some times, someone's home computer has a public address.
             // this makes the tests fail unless we get the address the same way as invite code.
-            var expected = alice.address('public') || alice.address('local') || alice.address('device')
+            const expected = alice.address('public') || alice.address('local') || alice.address('device')
             t.deepEqual(
               ary.map(m => m.value.content),
               [
@@ -165,8 +166,8 @@ tape('test invite.accept doesnt follow if already followed', function (t) {
 })
 
 tape('test invite.accept publishes new "pub" msg if same pub at different address', function (t) {
-  var alice = Server({ allowPrivate: true })
-  var bob = Server()
+  const alice = Server({ allowPrivate: true })
+  const bob = Server()
 
   // request a secret that with particular permissions.
   alice.invite.create(2, function (err, invite) {
@@ -224,8 +225,8 @@ function mutateInviteDomain (invite) {
 }
 
 tape('test invite.accept api with ipv6', { skip: skipIPv6 }, function (t) {
-  var alice = Server({ allowPrivate: true })
-  var bob = Server()
+  const alice = Server({ allowPrivate: true })
+  const bob = Server()
 
   alice.invite.create(1, function (err, invite) {
     if (err) throw err
@@ -237,9 +238,9 @@ tape('test invite.accept api with ipv6', { skip: skipIPv6 }, function (t) {
     //    var parts = invite.split(':')
     //    parts[0].split(':').pop()
     //    console.log(inviteV6, invite)
-    var parts = invite.split('~')
+    const parts = invite.split('~')
 
-    var addr = ref.parseAddress(parts[0])
+    const addr = ref.parseAddress(parts[0])
 
     addr.host = '::1'
 
