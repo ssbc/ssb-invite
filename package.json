@@ -8,8 +8,9 @@
     "url": "git://github.com/ssbc/ssb-invite.git"
   },
   "scripts": {
-    "test": "npm run test:js && npm run lint",
+    "test": "npm run test:js && npm run test:js:old && npm run lint",
     "test:js": "tape 'test/*.test.js' | tap-arc",
+    "test:js:old": "OLD_DEPS=true npm run test:js",
     "lint": "standard --fix"
   },
   "dependencies": {
@@ -27,6 +28,10 @@
     "scuttle-testbot": "^2.2.0",
     "ssb-ebt": "^9.1.2",
     "ssb-friends": "^5.1.7",
+    "ssb-friends-4": "npm:ssb-friends@4.4.10",
+    "ssb-invite-2": "npm:ssb-invite@2.1.7",
+    "ssb-conn-1": "npm:ssb-conn@1.0.0",
+    "ssb-replicate": "^1.3.5",
     "ssb-replication-scheduler": "^3.1.0",
     "ssb-ws": "^6.2.3",
     "standard": "^17.1.0",
