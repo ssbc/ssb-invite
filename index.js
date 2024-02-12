@@ -11,6 +11,8 @@ const path = require('path')
 
 const createClient = require('ssb-client/client')
 
+const ALREADY_FOLLOWING = 'already following'
+
 // invite plugin
 // adds methods for producing invite-codes,
 // which peers can use to command your server to follow them.
@@ -25,6 +27,14 @@ function isObject (o) {
 
 function isNumber (n) {
   return typeof n === 'number' && !isNaN(n)
+}
+
+function logErrorCb (err) {
+  if (err) console.log(err)
+}
+
+function contNoop (cb) {
+  cb()
 }
 
 module.exports = {
@@ -244,15 +254,15 @@ module.exports = {
 
           // command the peer to follow me
           rpc.invite.use({ feed: server.id }, (err, msg) => {
-            if (err && err.message !== 'already following') {
+            if (err && err.message !== ALREADY_FOLLOWING) {
               return cb(explain(err, 'invite not accepted'))
             }
 
             // (maybe) follow and announce the pub
             cont.para([
               (
-                (err && err.message === 'already following')
-                  ? (cb) => cb()
+                (err && err.message === ALREADY_FOLLOWING)
+                  ? contNoop
                   : cont(server.publish)({
                     type: 'contact',
                     following: true,
@@ -266,12 +276,12 @@ module.exports = {
                     type: 'pub',
                     address: opts
                   })
-                  : (cb) => cb()
+                  : contNoop
               )
             ])((err, results) => {
               if (err) return cb(err)
-              rpc.close()
-              rpc.close()
+              rpc.close(logErrorCb)
+              rpc.close(logErrorCb)
               // ignore err if this is new style invite
               if (server.gossip && server.gossip.add) server.gossip.add(ref.parseInvite(invite).remote, 'seed')
               cb(null, results)
