@@ -162,38 +162,43 @@ module.exports = {
             if (err) return cb(err)
             if (isFollowing) { return cb(new Error('already following')) }
 
-            // although we already know the current feed
-            // it's included so that request cannot be replayed.
-            if (!req.feed) { return cb(new Error('feed to follow is missing')) }
+            server.friends.isBlocking({ source: server.id, dest: req.feed }, (err, isBlocking) => {
+               if (err) return cb(err)
+               if (isBlocking) { return cb(new Error('user is blocked')) }
 
-            if (invite.used >= invite.total) { return cb(new Error('invite has expired')) }
+              // although we already know the current feed
+              // it's included so that request cannot be replayed.
+              if (!req.feed) { return cb(new Error('feed to follow is missing')) }
 
-            invite.used++
+              if (invite.used >= invite.total) { return cb(new Error('invite has expired')) }
 
-            // never allow this to be used again
-            if (invite.used >= invite.total) {
+              invite.used++
+
+              // never allow this to be used again
+              if (invite.used >= invite.total) {
               invite.permissions = { allow: [], deny: null }
-            }
-            // TODO
-            // okay so there is a small race condition here
-            // if people use a code massively in parallel
-            // then it may not be counted correctly...
-            // this is not a big enough deal to fix though.
-            // -dominic
+              }
+              // TODO
+              // okay so there is a small race condition here
+              // if people use a code massively in parallel
+              // then it may not be counted correctly...
+              // this is not a big enough deal to fix though.
+              // -dominic
 
-            // update code metadata
-            codesDB.put(rpc.id, invite, (err) => {
+              // update code metadata
+              codesDB.put(rpc.id, invite, (err) => {
               if (err) return cb(err)
               server.emit('log:info', ['invite', rpc.id, 'use', req])
 
               // follow the user
               server.publish({
-                type: 'contact',
-                contact: req.feed,
-                following: true,
-                pub: true,
-                note: invite.note || undefined
+                 type: 'contact',
+                 contact: req.feed,
+                 following: true,
+                 pub: true,
+                 note: invite.note || undefined
               }, cb)
+              })
             })
           })
         })
