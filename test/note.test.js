@@ -1,14 +1,14 @@
 // WARNING: this test currently only passes if the computer has a network.
-var tape = require('tape')
-var pull = require('pull-stream')
-var Server = require('./test-bot')
+const tape = require('tape')
+const pull = require('pull-stream')
+const Server = require('./test-bot')
 
 function all (stream, cb) {
   return pull(stream, pull.collect(cb))
 }
 
 tape('test invite with note', function (t) {
-  var wsConnections = {
+  const wsConnections = {
     incoming: {
       net: [{ scope: ['local', 'device'], transform: 'shs', host: '::' }],
       ws: [{ scope: ['local', 'device'], transform: 'shs', host: '::' }]
@@ -18,11 +18,11 @@ tape('test invite with note', function (t) {
       ws: [{ transform: 'shs' }]
     }
   }
-  var alice = Server({
+  const alice = Server({
     allowPrivate: true,
     connections: wsConnections
   })
-  var bob = Server()
+  const bob = Server()
 
   alice.invite.create({ uses: 1, note: 'bob' }, (err, invite) => {
     t.error(err, 'invite created')
